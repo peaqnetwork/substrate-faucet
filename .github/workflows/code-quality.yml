@@ -2,6 +2,7 @@ name: QualityGate
 on:
   pull_request:
     branches:
+      - master
       - dev 
       - parachain_dev # or the name of your main branch
       
