@@ -22,11 +22,11 @@ spec:
           name: ""
           resources: {}
         - name: jx-variables
-          resources:
-            # override requests for the pod here
-            requests:
-              cpu: 400m
-              memory: 512Mi
+          resources: {}
+          #   # override requests for the pod here
+          #   requests:
+          #     cpu: 400m
+          #     memory: 512Mi
         - name: build-python-unittest
           resources: {}
         - name: check-registry

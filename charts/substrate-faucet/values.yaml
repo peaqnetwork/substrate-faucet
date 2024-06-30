@@ -23,7 +23,25 @@ jx:
   releaseCRD: true
 
 # define environment variables here as a map of key: value
+
 env:
+envconfigmap:
+  name: substrate-faucet-configmap
+envFrom:
+  - configMapRef:
+      name: agung-faucet-bot-config
+
+botConfig:
+  NODE_RPC: "wss://wss.agung.peaq.network"
+  TOKENS_TO_SEND: "1000000000000000000"
+  TOKEN_SYMBOL: "AGNG"
+  ISSUE_INTERVAL: 60
+  REDIS_IP: "127.0.0.1"
+  REDIS_PORT: "6379"
+  PROMETHEUS_PORT: "8080"
+
+botSecrets:
+  name: agung-faucet-bot-secret
 
 # enable this flag to use knative serve to deploy the app
 knativeDeploy: false
@@ -69,13 +87,13 @@ service:
   annotations: {}
   # Add labels to the service
   labels: {}
-resources:
-  limits:
-    cpu: 400m
-    memory: 256Mi
-  requests:
-    cpu: 200m
-    memory: 128Mi
+# resources:
+#   limits:
+#     cpu: 400m
+#     memory: 256Mi
+#   requests:
+#     cpu: 200m
+#     memory: 128Mi
 probePath: /
 livenessProbe:
   initialDelaySeconds: 60
