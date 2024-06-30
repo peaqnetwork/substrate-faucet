@@ -39,12 +39,57 @@ spec:
 {{- end }}
 {{- end }}
       containers:
+      - name: redis
+        image: redis:5.0.4
+        ports:
+        - containerPort: 6379
+        resources:
+          requests: {}   
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 30
+          periodSeconds: 20
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.envconfigmap.name }}
         env:
         - name: VERSION
           value: {{ .Chart.Version }}
+        - name: DISCORD_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.botSecrets.name }}
+              key: DISCORD_BOT_TOKEN
+              optional: false
+        - name: FAUCET_MNEMONIC
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.botSecrets.name }}
+              key: FAUCET_MNEMONIC
+              optional: false
+        #- name: NODE_RPC
+        #  value: "{{ .Values.botConfig.NODE_RPC }}"
+        - name: TOKENS_TO_SEND
+          value: "{{ .Values.botConfig.TOKENS_TO_SEND }}"
+        - name: TOKEN_SYMBOL
+          value: "{{ .Values.botConfig.TOKEN_SYMBOL }}"
+        - name: ISSUE_INTERVAL
+          value: "{{ .Values.botConfig.ISSUE_INTERVAL }}"
+        - name: REDIS_IP
+          value: "{{ .Values.botConfig.REDIS_IP }}"
+        - name: REDIS_PORT
+          value: "{{ .Values.botConfig.REDIS_PORT }}"
+        - name: PROMETHEUS_PORT
+          value: "{{ .Values.botConfig.PROMETHEUS_PORT }}"
 {{- range $pkey, $pval := .Values.env }}
         - name: {{ $pkey }}
           value: {{ quote $pval }}
